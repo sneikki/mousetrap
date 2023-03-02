@@ -3,7 +3,7 @@ from Token import Token
 
 
 def is_flag_token(arg):
-    return bool(re.fullmatch("-\\D|--(\\w{2,}-?)+", arg))
+    return bool(re.fullmatch("-\\w|--(\\w{2,}-?)+", arg))
 
 
 def get_token_type(arg):
