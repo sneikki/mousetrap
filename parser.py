@@ -1,44 +1,45 @@
 import itertools
-from flag import find_flag
+
 from exception import ArityException, UnknownFlagException
+from flag import Flag, find_flag_declaration
+from util import safe_head
 
 
-def parse(tokens):
-    try:
-        head = next(tokens)
-    except StopIteration:
-        return
+def parse(tokens, flags):
+    current_token = safe_head(tokens)
 
-    if head.type == "flag":
-        parse_flag(head, tokens)
+    if not current_token:
+        return flags
+    elif current_token.type == "flag":
+        flags.append(parse_flag(current_token, tokens))
 
-    parse(tokens)
-
-
-def parse_flag(current, rest):
-    flag = find_flag(current.value)
-    if not flag:
-        raise UnknownFlagException(
-            f"""No flag called "{current.literal}" exists.""")
-
-    arity = flag["arity"]
-    args = itertools.islice(rest, arity)
-
-    parse_flag_args(current, arity, args)
+    return parse(tokens, flags)
 
 
-def parse_flag_args(flag, arity, args):
-    args_processed = 0
+def parse_flag(flag_token, tokens):
+    flag_details = find_flag_declaration(flag_token.value)
+    if not flag_details:
+        raise UnknownFlagException(flag_token.literal)
 
-    for arg in args:
-        if arg.type == "flag":
-            raise ArityException(
-                f"""Flag "{flag.literal}" is missing "{arity}" {
-                "arguments" if arity > 1 else "argument"}.""")
+    flag_arity = flag_details.get("arity", 0)
+    flag_args = parse_flag_args(
+        flag_token.literal,
+        flag_arity,
+        itertools.islice(tokens, flag_arity)
+    )
 
-        args_processed += 1
+    return Flag(flag_token.value, flag_args)
 
-    if args_processed < arity:
-        raise ArityException(
-            f"""Unexpected end of input, flag "{flag.literal}" is missing {arity} {
-            "arguments" if arity > 1 else "argument"}.""")
+
+def parse_flag_args(flag_literal, flag_arity, arg_tokens):
+    valid_args = []
+
+    for arg_token in arg_tokens:
+        if arg_token.type == "flag":
+            break
+        valid_args.append(arg_token)
+
+    if len(valid_args) < flag_arity:
+        raise ArityException(flag_literal, flag_arity, len(valid_args))
+
+    return valid_args
