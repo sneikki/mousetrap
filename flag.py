@@ -1,17 +1,25 @@
 import re
 
+from util import safe_head
 
-FLAGS = [
-    {"test": "h(elp)?", "arity": 0},
-    {"test": "v(ersion)?", "arity": 0},
-    {"test": "verbose", "arity": 0},
-    {"test": "name", "arity": 2},
+flag_declarations = [
+    {"name": "help", "match": "h(elp)?"},
+    {"name": "version", "match": "v(ersion)?"},
+    {"name": "verbose", "match": "verbose"},
+    {"name": "name", "match": "name", "arity": 1},
 ]
 
 
-def find_flag(query):
-    try:
-        return next(filter(lambda flag: re.fullmatch(
-            flag["test"], query), FLAGS))
-    except StopIteration:
-        return None
+class Flag:
+    def __init__(self, name, args):
+        self.name = name
+        self.args = args
+
+
+def find_flag_declaration(query):
+    return safe_head(
+        filter(
+            lambda flag: re.fullmatch(flag["match"], query),
+            flag_declarations
+        )
+    )
