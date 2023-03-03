@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
-from tokenizer import tokenize
-from parser import parse
+from parsing.tokenizer import tokenize
+from parsing.parser import parse
 from exception import MousetrapException
 
 if __name__ == "__main__":

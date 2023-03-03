@@ -1,5 +1,5 @@
 import re
-from token import Token
+from parsing.token import Token
 
 
 def is_flag_token(arg):
