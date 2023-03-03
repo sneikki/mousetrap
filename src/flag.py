@@ -3,10 +3,21 @@ import re
 from util import safe_head
 
 flag_declarations = [
-    {"name": "help", "match": "h(elp)?"},
-    {"name": "version", "match": "v(ersion)?"},
-    {"name": "verbose", "match": "verbose"},
-    {"name": "name", "match": "name", "arity": 1},
+    {
+        "name": "help",
+        "match": "h(elp)?",
+        "description": "show this guide"
+    },
+    {
+        "name": "version",
+        "match": "v(ersion)?",
+        "description": "show the version that this program is running"
+    },
+    {
+        "name": "verbose",
+        "match": "verbose",
+        "description": "more output is generated"
+    }
 ]
 
 
