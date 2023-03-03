@@ -1,7 +1,10 @@
+from util import get_message
+
+
 class MousetrapException(Exception):
     def __init__(self, name, message, exit_code):
         self.exit_code = exit_code
-        self.message = f"{name}: {message}"
+        self.message = f"""{name}: {message}\n\n{get_message("see-help")}"""
 
         super().__init__(self.message)
 
