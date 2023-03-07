@@ -8,7 +8,8 @@ if __name__ == "__main__":
     tokens = tokenize(sys.argv[1:])
 
     try:
-        parse(tokens, [])
+        execution_state = {"flags": [], "args": []}
+        execution_state = parse(tokens, execution_state)
     except MousetrapException as error:
         print(error.message, file=sys.stderr)
         exit(error.exit_code)

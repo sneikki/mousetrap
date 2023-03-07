@@ -5,15 +5,20 @@ from flag import Flag, find_flag_declaration
 from util import safe_head
 
 
-def parse(tokens, flags):
+def parse(tokens, state):
     current_token = safe_head(tokens)
 
     if not current_token:
-        return flags
+        return state
     elif current_token.type == "flag":
-        flags.append(parse_flag(current_token, tokens))
+        state["flags"].append(parse_flag(current_token, tokens))
+    elif current_token.type == "identifier":
+        if not state.get("command"):
+            state["command"] = current_token.value
+        else:
+            state["args"].append(current_token.value)
 
-    return parse(tokens, flags)
+    return parse(tokens, state)
 
 
 def parse_flag(flag_token, tokens):
